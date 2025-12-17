@@ -42,7 +42,16 @@ const ensureDataDir = async () => {
 }
 
 // GET alle RSVPs
+// GET alle RSVPs - NUR mit Admin-Token
 app.get("/api/rsvps", async (req, res) => {
+  // Prüfe Admin-Token
+  const token = req.headers["authorization"]
+
+  if (token !== "Bearer admin_secret_2026") {
+    console.log("❌ Unauthorized access attempt")
+    return res.status(401).json({ error: "Unauthorized" })
+  }
+
   try {
     const data = await fs.readFile(DATA_FILE, "utf8")
     const rsvps = JSON.parse(data)
